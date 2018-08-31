@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Main {
@@ -27,15 +28,18 @@ public class Main {
 
         // Фалы со строками ошибок и строками списка ЗНИ и почтоых адресов
         List<String> ErrFileLines=LoadFile(args[0]);
-        // List<String> ZNIListLines=LoadFile(args[1]);
+        HashMap<String, List<String>> EmailList=LoadEmailList(args[1]);
+
 
         // List of
-        List<String> txtReport=new ArrayList<String>();
+        List<String> txtMailBody=new ArrayList<String>();
+        List<String> txtMailAddress=new ArrayList<String>();
 
         boolean flagLookNextString=false;
         String sMainZNI=new String();
         String sOverlapZNI=new String();
         String MailFile= Paths.get(Paths.get(args[0]).getParent().toString(),"ODMail.txt").toString();
+        String AddressFile = Paths.get(Paths.get(args[0]).getParent().toString(),"ODAdress.txt").toString();
 
         // Сгенерируем отчет по файлу ошибок
         for (String line : ErrFileLines)
@@ -48,7 +52,12 @@ public class Main {
                     sReportString = LN+"ЗНИ " + items[1] + " разарботчик " + items[2];
                     sMainZNI = items[1];
                     sOverlapZNI="";
-                    txtReport.add(sReportString);
+                    txtMailBody.add(sReportString);
+                    if (EmailList.containsKey(sMainZNI))
+                    {
+                        List<String> lstEmails=EmailList.get(sMainZNI);
+                        lstEmails.forEach(s->txtMailAddress.add(s+";"));
+                    }
                 }
             }
 
@@ -71,6 +80,9 @@ public class Main {
                         sReportString=sReportString+" по файлу "+items[2];
                     flagLookNextString=true;
                     break;
+                case "4":
+                    sReportString=sReportString+"    Сообщите о изменении кода разработчкам ЗНИ "+items[3]+LN;
+                    break;
             }
             if (flagLookNextString & items.length==1)
             {
@@ -78,12 +90,16 @@ public class Main {
                 flagLookNextString=false;
 
             }
-            txtReport.add(sReportString);
+            txtMailBody.add(sReportString);
+
         }
 
 
-        txtReport.forEach(System.out::println);
-        SaveFile(MailFile, txtReport);
+        txtMailBody.forEach(System.out::println);
+
+        SaveFile(MailFile, txtMailBody);
+        SaveFile(AddressFile, txtMailAddress);
+
     }
 
     // Загрузить файл с диска с обработкой ошибок
@@ -125,5 +141,29 @@ public class Main {
         }
     }
 
+    // Загрузить список ЗНИ списком
+    private static HashMap<String, List<String>> LoadEmailList(String fromFile)
+    {
+        List<String> ZNIListLines=LoadFile(fromFile);
+        HashMap<String, List<String>> EmailList=new HashMap<String, List<String>>();
 
+        for (String ZNIItem : ZNIListLines)
+        {
+            List<String> stringMails=new ArrayList<String>();
+            String keyZNI=new String();
+            String[] items=ZNIItem.split(",");
+            int idx=0;
+
+            while (idx<items.length & !items[idx].equals("#"))
+            {
+                if (idx==0)
+                    keyZNI=items[idx];
+                if (idx>1)
+                    stringMails.add(items[idx]);
+                idx++;
+            };
+            EmailList.put(keyZNI,stringMails);
+        }
+        return EmailList;
+    }
 }
