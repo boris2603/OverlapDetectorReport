@@ -21,8 +21,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        if (args.length < 1)  {
-            System.out.println("Usage java OverlapDetectorReport.jar Error_file ZNI_List_File Report_file_path");
+        if (args.length < 2)  {
+            System.out.println("Usage java OverlapDetectorReport.jar Error_file ZNI_List_File");
             return;
         }
 
@@ -47,8 +47,11 @@ public class Main {
             String[] items = line.split(",");
             String sReportString=new String();
 
+            if ((items.length<2) & !flagLookNextString)
+                    continue;
+
             if (!flagLookNextString) {
-                if (!items[1].equals(sMainZNI) & (items[0].equals("1") | items[0].equals("2"))) {
+                if (!items[1].equals(sMainZNI) & (items[0].equals("1") | items[0].equals("2") | items[0].equals("4"))) {
                     sReportString = LN+"ЗНИ " + items[1] + " разарботчик " + items[2];
                     sMainZNI = items[1];
                     sOverlapZNI="";
@@ -79,9 +82,16 @@ public class Main {
                     else
                         sReportString=sReportString+" по файлу "+items[2];
                     flagLookNextString=true;
+                    sMainZNI="";
+                    sOverlapZNI="";
                     break;
                 case "4":
-                    sReportString=sReportString+"    Сообщите о изменении кода разработчкам ЗНИ "+items[3]+LN;
+                    sReportString=sReportString+"    Сообщите о изменении кода разработчкам ЗНИ "+items[3];
+                    if (EmailList.containsKey(items[3]))
+                    {
+                        List<String> lstEmails=EmailList.get(items[3]);
+                        sReportString=sReportString+" "+lstEmails.get(0);
+                    };
                     break;
             }
             if (flagLookNextString & items.length==1)
