@@ -52,7 +52,7 @@ public class Main {
 
             if (!flagLookNextString) {
                 if (!items[1].equals(sMainZNI) & (items[0].equals("1") | items[0].equals("2") | items[0].equals("4"))) {
-                    sReportString = LN+"ЗНИ " + items[1] + " разарботчик " + items[2];
+                    sReportString = LN+"ЗНИ " + items[1] + " разработчик " + items[2];
                     sMainZNI = items[1];
                     sOverlapZNI="";
                     txtMailBody.add(sReportString);
