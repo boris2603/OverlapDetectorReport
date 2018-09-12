@@ -66,7 +66,7 @@ public class Main {
 
             switch (items[0]) {
                 case "1":
-                    sReportString="   "+items[3]+" не внедряется в релизе, но указана зависимость";
+                    sReportString="   "+items[3]+" не вошла в сборку , но указана зависимость";
                     break;
                 case "2":
                     if (!items[3].equals(sOverlapZNI)) {
