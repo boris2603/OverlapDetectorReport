@@ -168,7 +168,7 @@ public class Main {
             {
                 if (idx==0)
                     keyZNI=items[idx];
-                if (idx>1)
+                if (idx>2)
                     stringMails.add(items[idx]);
                 idx++;
             };
