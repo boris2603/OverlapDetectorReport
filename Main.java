@@ -106,6 +106,9 @@ public class Main {
 
 
         txtMailBody.forEach(System.out::println);
+        System.out.println();
+        System.out.println("E-Mail List:");
+        txtMailAddress.forEach(System.out::println);
 
         SaveFile(MailFile, txtMailBody);
         SaveFile(AddressFile, txtMailAddress);
@@ -140,6 +143,8 @@ public class Main {
 
         try
         {
+            if (Files.exists(Paths.get(fileName)))
+                            Files.delete(Paths.get(fileName));
             Files.write(Paths.get(fileName), ReportText, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
         }
         catch (IOException e)
