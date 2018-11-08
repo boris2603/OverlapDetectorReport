@@ -165,19 +165,22 @@ public class Main {
         for (String ZNIItem : ZNIListLines)
         {
             List<String> stringMails=new ArrayList<String>();
-            String keyZNI=new String();
-            String[] items=ZNIItem.split(",");
-            int idx=0;
 
-            while (idx<items.length & !items[idx].equals("#"))
-            {
-                if (idx==0)
-                    keyZNI=items[idx];
-                if (idx>2)
-                    stringMails.add(items[idx]);
-                idx++;
-            };
-            EmailList.put(keyZNI,stringMails);
+            if (ZNIItem.charAt(0)!='#') {
+                String keyZNI = new String();
+                String[] items = ZNIItem.split(",");
+                int idx = 0;
+
+                while (idx < items.length & !items[idx].equals("#")) {
+                    if (idx == 0)
+                        keyZNI = items[idx];
+                    if (idx > 2)
+                        stringMails.add(items[idx]);
+                    idx++;
+                }
+                ;
+                EmailList.put(keyZNI, stringMails);
+            }
         }
         return EmailList;
     }
